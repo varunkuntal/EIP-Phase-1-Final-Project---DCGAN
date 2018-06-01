@@ -2,8 +2,6 @@
 Modification of https://github.com/stanfordnlp/treelstm/blob/master/scripts/download.py
 Downloads the following:
 - Celeb-A dataset
-- LSUN dataset
-- MNIST dataset
 """
 
 from __future__ import print_function
@@ -19,9 +17,40 @@ import subprocess
 from tqdm import tqdm
 from six.moves import urllib
 
+
 parser = argparse.ArgumentParser(description='Download dataset for DCGAN.')
 parser.add_argument('datasets', metavar='N', type=str, nargs='+', choices=['celebA', 'lsun', 'mnist'],
            help='name of dataset to download [celebA, lsun, mnist]')
+
+def download_file_from_google_drive(fileid, path):
+    URL = "https://docs.google.com/uc?export=download"
+
+    session = requests.Session()
+
+    response = session.get(URL, params={'id': fileid}, stream=True)
+    token = get_confirm_token(response)
+
+    if token:
+        params = {'id': fileid, 'confirm': token}
+        response = session.get(URL, params=params, stream=True)
+
+    save_response_content(response, path)
+
+def get_confirm_token(response):
+    for key, value in response.cookies.items():
+        if key.startswith('download_warning'):
+            return value
+
+    return None
+
+
+def save_response_content(response, path):
+    CHUNK_SIZE = 32768
+
+    with open(path, "wb") as f:
+        for chunk in response.iter_content(CHUNK_SIZE):
+            if chunk:
+                f.write(chunk)
 
 def download(url, dirpath):
   filename = url.split('/')[-1]
@@ -110,65 +139,55 @@ def _list_categories(tag):
   f = urllib.request.urlopen(url)
   return json.loads(f.read())
 
-def _download_lsun(out_dir, category, set_name, tag):
-  url = 'http://lsun.cs.princeton.edu/htbin/download.cgi?tag={tag}' \
-      '&category={category}&set={set_name}'.format(**locals())
-  print(url)
-  if set_name == 'test':
-    out_name = 'test_lmdb.zip'
-  else:
-    out_name = '{category}_{set_name}_lmdb.zip'.format(**locals())
-  out_path = os.path.join(out_dir, out_name)
-  cmd = ['curl', url, '-o', out_path]
-  print('Downloading', category, set_name, 'set')
-  subprocess.call(cmd)
-
-def download_lsun(dirpath):
-  data_dir = os.path.join(dirpath, 'lsun')
-  if os.path.exists(data_dir):
-    print('Found LSUN - skip')
-    return
-  else:
-    os.mkdir(data_dir)
-
-  tag = 'latest'
-  #categories = _list_categories(tag)
-  categories = ['bedroom']
-
-  for category in categories:
-    _download_lsun(data_dir, category, 'train', tag)
-    _download_lsun(data_dir, category, 'val', tag)
-  _download_lsun(data_dir, '', 'test', tag)
-
-def download_mnist(dirpath):
-  data_dir = os.path.join(dirpath, 'mnist')
-  if os.path.exists(data_dir):
-    print('Found MNIST - skip')
-    return
-  else:
-    os.mkdir(data_dir)
-  url_base = 'http://yann.lecun.com/exdb/mnist/'
-  file_names = ['train-images-idx3-ubyte.gz',
-                'train-labels-idx1-ubyte.gz',
-                't10k-images-idx3-ubyte.gz',
-                't10k-labels-idx1-ubyte.gz']
-  for file_name in file_names:
-    url = (url_base+file_name).format(**locals())
-    print(url)
-    out_path = os.path.join(data_dir,file_name)
-    cmd = ['curl', url, '-o', out_path]
-    print('Downloading ', file_name)
-    subprocess.call(cmd)
-    cmd = ['gzip', '-d', out_path]
-    print('Decompressing ', file_name)
-    subprocess.call(cmd)
-
 if __name__ == '__main__':
   args = parser.parse_args()
+  # id and path
+  readme_ids = [
+     '0B7EVK8r0v71pOXBhSUdJWU1MYUk']
+  readme_paths = [
+        '/content/DeepLearningImplementations/Colorful/data/raw/README.txt']
+
+  annotation_ids = [
+        '0B7EVK8r0v71pbThiMVRxWXZ4dU0',
+        '0B7EVK8r0v71pblRyaVFSWGxPY0U',
+        '0B7EVK8r0v71pd0FJY3Blby1HUTQ',
+        '0B7EVK8r0v71pTzJIdlJWdHczRlU']
+  annotation_paths = [
+        '/content/DeepLearningImplementations/Colorful/data/raw/Anno/list_bbox_celeba.txt',
+        '/content/DeepLearningImplementations/Colorful/data/raw/Anno/list_attr_celeba.txt',
+        '/content/DeepLearningImplementations/Colorful/data/raw/Anno/list_landmarks_align_celeba.txt',
+        '/content/DeepLearningImplementations/Colorful/data/raw/Anno/list_landmarks_celeba.txt']
+
+  eval_ids = [
+        '0B7EVK8r0v71pY0NSMzRuSXJEVkk']
+  eval_paths = [
+        '/content/DeepLearningImplementations/Colorful/data/raw/Eval/list_eval_partition.txt']
+    
+  ids = readme_ids + annotation_ids + eval_ids 
+
+  paths = readme_paths + annotation_paths + eval_paths
+    # directory
+  try:
+      root = os.path.join(sys.argv[1], '/content/DeepLearningImplementations/Colorful/data/raw')
+  except:
+      root = '/content/DeepLearningImplementations/Colorful/data/raw/'
+    
+  Anno = os.path.join(root, '/content/DeepLearningImplementations/Colorful/data/raw/Anno')
+  Eval = os.path.join(root, '/content/DeepLearningImplementations/Colorful/data/raw/Eval')
+
+  if not os.path.exists(Anno):
+      os.makedirs(Anno)
+
+  if not os.path.exists(Eval):
+      os.makedirs(Eval)
+    
 
   if any(name in args.datasets for name in ['CelebA', 'celebA', 'celebA']):
-    download_celeb_a('/content//DeepLearningImplementations/Colorful/data/raw/')
-  if 'lsun' in args.datasets:
-    download_lsun('./data')
-  if 'mnist' in args.datasets:
-    download_mnist('./data')
+      download_celeb_a('/content/DeepLearningImplementations/Colorful/data/raw/')
+
+  for i, (fileid, path) in enumerate(zip(ids, paths)):
+        print('{}/{} downloading {}'.format(i + 1, len(ids), path))
+        path = os.path.join(root, path)
+        if not os.path.exists(path):
+            download_file_from_google_drive(fileid, path)
+
