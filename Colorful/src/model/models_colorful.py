@@ -87,7 +87,7 @@ def colorful(nb_classes, img_dim, batch_size, model_name="colorful"):
     x = ReshapeSoftmax(x)
 
     # Build model
-    colorful = Model(input=[x_input], output=[x], name=model_name)
+    colorful = Model(inputs=[x_input], outputs=[x], name=model_name)
 
     return colorful
 
