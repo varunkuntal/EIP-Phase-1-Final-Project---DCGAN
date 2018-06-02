@@ -145,7 +145,7 @@ if __name__ == '__main__':
   readme_ids = [
      '0B7EVK8r0v71pOXBhSUdJWU1MYUk']
   readme_paths = [
-        '/content/DeepLearningImplementations/Colorful/data/raw/README.txt']
+        '/content/DeepLearningImplementations/GAN/data/raw/README.txt']
 
   annotation_ids = [
         '0B7EVK8r0v71pbThiMVRxWXZ4dU0',
@@ -153,27 +153,27 @@ if __name__ == '__main__':
         '0B7EVK8r0v71pd0FJY3Blby1HUTQ',
         '0B7EVK8r0v71pTzJIdlJWdHczRlU']
   annotation_paths = [
-        '/content/DeepLearningImplementations/Colorful/data/raw/Anno/list_bbox_celeba.txt',
-        '/content/DeepLearningImplementations/Colorful/data/raw/Anno/list_attr_celeba.txt',
-        '/content/DeepLearningImplementations/Colorful/data/raw/Anno/list_landmarks_align_celeba.txt',
-        '/content/DeepLearningImplementations/Colorful/data/raw/Anno/list_landmarks_celeba.txt']
+        '/content/DeepLearningImplementations/GAN/data/raw/Anno/list_bbox_celeba.txt',
+        '/content/DeepLearningImplementations/GAN/data/raw/Anno/list_attr_celeba.txt',
+        '/content/DeepLearningImplementations/GAN/data/raw/Anno/list_landmarks_align_celeba.txt',
+        '/content/DeepLearningImplementations/GAN/data/raw/Anno/list_landmarks_celeba.txt']
 
   eval_ids = [
         '0B7EVK8r0v71pY0NSMzRuSXJEVkk']
   eval_paths = [
-        '/content/DeepLearningImplementations/Colorful/data/raw/Eval/list_eval_partition.txt']
+        '/content/DeepLearningImplementations/GAN/data/raw/Eval/list_eval_partition.txt']
     
   ids = readme_ids + annotation_ids + eval_ids 
 
   paths = readme_paths + annotation_paths + eval_paths
     # directory
   try:
-      root = os.path.join(sys.argv[1], '/content/DeepLearningImplementations/Colorful/data/raw')
+      root = os.path.join(sys.argv[1], '/content/DeepLearningImplementations/GAN/data/raw')
   except:
-      root = '/content/DeepLearningImplementations/Colorful/data/raw/'
+      root = '/content/DeepLearningImplementations/GAN/data/raw/'
     
-  Anno = os.path.join(root, '/content/DeepLearningImplementations/Colorful/data/raw/Anno')
-  Eval = os.path.join(root, '/content/DeepLearningImplementations/Colorful/data/raw/Eval')
+  Anno = os.path.join(root, '/content/DeepLearningImplementations/GAN/data/raw/Anno')
+  Eval = os.path.join(root, '/content/DeepLearningImplementations/GAN/data/raw/Eval')
 
   if not os.path.exists(Anno):
       os.makedirs(Anno)
@@ -183,7 +183,7 @@ if __name__ == '__main__':
     
 
   if any(name in args.datasets for name in ['CelebA', 'celebA', 'celebA']):
-      download_celeb_a('/content/DeepLearningImplementations/Colorful/data/raw/')
+      download_celeb_a('/content/DeepLearningImplementations/GAN/data/raw/')
 
   for i, (fileid, path) in enumerate(zip(ids, paths)):
         print('{}/{} downloading {}'.format(i + 1, len(ids), path))
