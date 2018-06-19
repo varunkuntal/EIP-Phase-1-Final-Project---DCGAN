@@ -20,21 +20,13 @@ def generator_upsampling(noise_dim, img_dim, bn_mode, model_name="generator_upsa
     s = img_dim[1]
     f = 512
 
-    if dset == "mnist":
-        start_dim = int(s / 4)
-        nb_upconv = 2
-    else:
-        start_dim = int(s / 16)
-        nb_upconv = 4
 
-    if K.image_data_format() == "channels_first":
-        bn_axis = 1
-        reshape_shape = (f, start_dim, start_dim)
-        output_channels = img_dim[0]
-    else:
-        reshape_shape = (start_dim, start_dim, f)
-        bn_axis = -1
-        output_channels = img_dim[-1]
+    start_dim = int(s / 16)
+    nb_upconv = 4
+
+    reshape_shape = (start_dim, start_dim, f)
+    bn_axis = -1
+    output_channels = img_dim[-1]
 
     gen_input = Input(shape=noise_dim, name="generator_input")
 
@@ -60,7 +52,7 @@ def generator_upsampling(noise_dim, img_dim, bn_mode, model_name="generator_upsa
     return generator_model
 
 
-def generator_deconv(noise_dim, img_dim, bn_mode, batch_size, model_name="generator_deconv", dset="mnist"):
+def generator_deconv(noise_dim, img_dim, bn_mode, batch_size, model_name="generator_deconv", dset="celebA"):
     """
     Generator model of the DCGAN
 
@@ -76,12 +68,8 @@ def generator_deconv(noise_dim, img_dim, bn_mode, batch_size, model_name="genera
     s = img_dim[1]
     f = 512
 
-    if dset == "mnist":
-        start_dim = int(s / 4)
-        nb_upconv = 2
-    else:
-        start_dim = int(s / 16)
-        nb_upconv = 4
+    start_dim = int(s / 16)
+    nb_upconv = 4
 
     reshape_shape = (start_dim, start_dim, f)
     bn_axis = -1
@@ -114,7 +102,7 @@ def generator_deconv(noise_dim, img_dim, bn_mode, batch_size, model_name="genera
     return generator_model
 
 
-def DCGAN_discriminator(noise_dim, img_dim, bn_mode, model_name="DCGAN_discriminator", dset="mnist", use_mbd=False):
+def DCGAN_discriminator(noise_dim, img_dim, bn_mode, model_name="DCGAN_discriminator", dset="celebA", use_mbd=False):
     """
     Discriminator model of the DCGAN
 
@@ -123,21 +111,14 @@ def DCGAN_discriminator(noise_dim, img_dim, bn_mode, model_name="DCGAN_discrimin
 
     returns : model (keras NN) the Neural Net model
     """
-
-    if K.image_data_format() == "channels_first":
-        bn_axis = 1
-    else:
-        bn_axis = -1
+    bn_axis = -1
 
     disc_input = Input(shape=img_dim, name="discriminator_input")
 
-    if dset == "mnist":
-        list_f = [128]
-
-    else:
-        list_f = [64, 128, 256]
+    list_f = [64, 128, 256]
 
     # First conv
+    assert conv.input_shape == (None, img_dim, img_dim, 3)
     x = Conv2D(32, (3, 3), strides=(2, 2), name="disc_Conv2D_1", padding="same")(disc_input)
     x = BatchNormalization(axis=bn_axis)(x)
     x = LeakyReLU(0.2)(x)
@@ -194,7 +175,7 @@ def DCGAN(generator, discriminator_model, noise_dim, img_dim):
     return DCGAN
 
 
-def load(model_name, noise_dim, img_dim, bn_mode, batch_size, dset="mnist", use_mbd=False):
+def load(model_name, noise_dim, img_dim, bn_mode, batch_size, dset="celeb", use_mbd=False):
 
     if model_name == "generator_upsampling":
         model = generator_upsampling(noise_dim, img_dim, bn_mode, model_name=model_name, dset=dset)
