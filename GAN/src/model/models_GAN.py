@@ -30,7 +30,7 @@ def generator_upsampling(noise_dim, img_dim, bn_mode, model_name="generator_upsa
 
     gen_input = Input(shape=noise_dim, name="generator_input")
 
-    x = Dense(f * start_dim * start_dim, input_dim=noise_dim, input_shape=noise_dim)(gen_input)
+    x = Dense(f * start_dim * start_dim, input_dim=noise_dim)(gen_input)
     x = Reshape(reshape_shape)(x)
     x = BatchNormalization(axis=bn_axis)(x)
     x = Activation("relu")(x)
@@ -118,15 +118,15 @@ def DCGAN_discriminator(noise_dim, img_dim, bn_mode, model_name="DCGAN_discrimin
     list_f = [64, 128, 256]
 
     # First conv
-    #assert x.input_shape == (None, img_dim, img_dim, 3)
-    x = Conv2D(32, (3, 3), strides=(2, 2), name="disc_Conv2D_1", padding="same", input_shape=(img_dim, img_dim, 3))(disc_input)
+    #assert conv.input_shape == (None, img_dim, img_dim, 3)
+    x = Conv2D(32, (3, 3), strides=(2, 2), name="disc_Conv2D_1", padding="same", input_shape=(None, 28, 28, 1))(disc_input)
     x = BatchNormalization(axis=bn_axis)(x)
     x = LeakyReLU(0.2)(x)
 
     # Next convs
     for i, f in enumerate(list_f):
         name = "disc_Conv2D_%s" % (i + 2)
-        x = Conv2D(f, (3, 3), strides=(2, 2), name=name, padding="same")(x)
+        x = Conv2D(f, (3, 3), strides=(2, 2), name=name, padding="same", input_shape=(None, 14, 14, 32))(x)
         x = BatchNormalization(axis=bn_axis)(x)
         x = LeakyReLU(0.2)(x)
 
