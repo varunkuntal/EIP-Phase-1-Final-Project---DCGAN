@@ -118,8 +118,8 @@ def DCGAN_discriminator(noise_dim, img_dim, bn_mode, model_name="DCGAN_discrimin
     list_f = [64, 128, 256]
 
     # First conv
-    assert conv.input_shape == (None, img_dim, img_dim, 3)
-    x = Conv2D(32, (3, 3), strides=(2, 2), name="disc_Conv2D_1", padding="same")(disc_input)
+    #assert x.input_shape == (None, img_dim, img_dim, 3)
+    x = Conv2D(32, (3, 3), strides=(2, 2), name="disc_Conv2D_1", padding="same", input_shape=(img_dim, img_dim, 3))(disc_input)
     x = BatchNormalization(axis=bn_axis)(x)
     x = LeakyReLU(0.2)(x)
 
