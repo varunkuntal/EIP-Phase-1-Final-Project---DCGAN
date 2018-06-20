@@ -30,7 +30,7 @@ def generator_upsampling(noise_dim, img_dim, bn_mode, model_name="generator_upsa
 
     gen_input = Input(shape=noise_dim, name="generator_input")
 
-    x = Dense(f * start_dim * start_dim, input_dim=noise_dim)(gen_input)
+    x = Dense(f * start_dim * start_dim, input_dim=noise_dim, input_shape=noise_dim)(gen_input)
     x = Reshape(reshape_shape)(x)
     x = BatchNormalization(axis=bn_axis)(x)
     x = Activation("relu")(x)
