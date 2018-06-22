@@ -11,16 +11,10 @@ import gzip
 import json
 import shutil
 import zipfile
-import argparse
 import requests
 import subprocess
 from tqdm import tqdm
 from six.moves import urllib
-
-
-parser = argparse.ArgumentParser(description='Download dataset for DCGAN.')
-parser.add_argument('datasets', metavar='N', type=str, nargs='+', choices=['celebA', 'lsun', 'mnist'],
-           help='name of dataset to download [celebA, lsun, mnist]')
 
 def download_file_from_google_drive(fileid, path):
     URL = "https://docs.google.com/uc?export=download"
@@ -134,11 +128,6 @@ def download_celeb_a(dirpath):
   os.remove(save_path)
   os.rename(os.path.join(dirpath, zip_dir), os.path.join(dirpath, data_dir))
 
-def _list_categories(tag):
-  url = 'http://lsun.cs.princeton.edu/htbin/list.cgi?tag=' + tag
-  f = urllib.request.urlopen(url)
-  return json.loads(f.read())
-
 if __name__ == '__main__':
   args = parser.parse_args()
   # id and path
@@ -182,11 +171,10 @@ if __name__ == '__main__':
       os.makedirs(Eval)
     
 
-  if any(name in args.datasets for name in ['CelebA', 'celebA', 'celebA']):
-      download_celeb_a('/content/DeepLearningImplementations/GAN/data/raw/')
+
+  download_celeb_a('/content/DeepLearningImplementations/GAN/data/raw/')
 
   for i, (fileid, path) in enumerate(zip(ids, paths)):
-        print('{}/{} downloading {}'.format(i + 1, len(ids), path))
         path = os.path.join(root, path)
         if not os.path.exists(path):
             download_file_from_google_drive(fileid, path)
