@@ -129,7 +129,6 @@ def download_celeb_a(dirpath):
   os.rename(os.path.join(dirpath, zip_dir), os.path.join(dirpath, data_dir))
 
 if __name__ == '__main__':
-  args = parser.parse_args()
   # id and path
   readme_ids = [
      '0B7EVK8r0v71pOXBhSUdJWU1MYUk']
