@@ -129,52 +129,5 @@ def download_celeb_a(dirpath):
   os.rename(os.path.join(dirpath, zip_dir), os.path.join(dirpath, data_dir))
 
 if __name__ == '__main__':
-  # id and path
-  readme_ids = [
-     '0B7EVK8r0v71pOXBhSUdJWU1MYUk']
-  readme_paths = [
-        '/content/DeepLearningImplementations/GAN/data/raw/README.txt']
-
-  annotation_ids = [
-        '0B7EVK8r0v71pbThiMVRxWXZ4dU0',
-        '0B7EVK8r0v71pblRyaVFSWGxPY0U',
-        '0B7EVK8r0v71pd0FJY3Blby1HUTQ',
-        '0B7EVK8r0v71pTzJIdlJWdHczRlU']
-  annotation_paths = [
-        '/content/DeepLearningImplementations/GAN/data/raw/Anno/list_bbox_celeba.txt',
-        '/content/DeepLearningImplementations/GAN/data/raw/Anno/list_attr_celeba.txt',
-        '/content/DeepLearningImplementations/GAN/data/raw/Anno/list_landmarks_align_celeba.txt',
-        '/content/DeepLearningImplementations/GAN/data/raw/Anno/list_landmarks_celeba.txt']
-
-  eval_ids = [
-        '0B7EVK8r0v71pY0NSMzRuSXJEVkk']
-  eval_paths = [
-        '/content/DeepLearningImplementations/GAN/data/raw/Eval/list_eval_partition.txt']
-    
-  ids = readme_ids + annotation_ids + eval_ids 
-
-  paths = readme_paths + annotation_paths + eval_paths
-    # directory
-  try:
-      root = os.path.join(sys.argv[1], '/content/DeepLearningImplementations/GAN/data/raw')
-  except:
-      root = '/content/DeepLearningImplementations/GAN/data/raw/'
-    
-  Anno = os.path.join(root, '/content/DeepLearningImplementations/GAN/data/raw/Anno')
-  Eval = os.path.join(root, '/content/DeepLearningImplementations/GAN/data/raw/Eval')
-
-  if not os.path.exists(Anno):
-      os.makedirs(Anno)
-
-  if not os.path.exists(Eval):
-      os.makedirs(Eval)
-    
-
-
   download_celeb_a('/content/DeepLearningImplementations/GAN/data/raw/')
-
-  for i, (fileid, path) in enumerate(zip(ids, paths)):
-        path = os.path.join(root, path)
-        if not os.path.exists(path):
-            download_file_from_google_drive(fileid, path)
 
