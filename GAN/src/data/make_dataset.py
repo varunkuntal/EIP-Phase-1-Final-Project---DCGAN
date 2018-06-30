@@ -84,7 +84,7 @@ def check_HDF5(size=64):
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Build dataset')
-    parser.add_argument('jpeg_dir', default="/content/DeepLearningImplementations/GAN/data/raw/img_align_celeba", type=str, help='path to celeba jpeg images')
+    parser.add_argument('jpeg_dir', default="/content/DeepLearningImplementations/GAN/data/raw/celeba", type=str, help='path to celeba jpeg images')
     parser.add_argument('--img_size', default=64, type=int,
                         help='Desired Width == Height')
     parser.add_argument('--do_plot', default=False, type=bool,
